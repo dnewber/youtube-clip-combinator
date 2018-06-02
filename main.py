@@ -9,7 +9,7 @@ from moviepy.editor import concatenate_videoclips
 
 
 def main():
-    parser = argparse.ArgumentParser(description='SommelYAY!')
+    parser = argparse.ArgumentParser(description='YouTube Clip Combinator')
     parser.add_argument(
         dest='playlist',
         type=str,
@@ -47,6 +47,7 @@ def concat_videos(videos):
         combined = concatenate_videoclips(videos)
         combined.write_videofile("final.mp4", audio_codec="aac")
     except Exception:
+        print('Something went wrong.')
         import ipdb; ipdb.set_trace()
 
 
