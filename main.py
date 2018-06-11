@@ -58,6 +58,7 @@ def process_playlist(playlist_filename):
                 clip = clip.subclip(int(video['start']), int(video['end']))
             if clip.w < 720:
                 clip = clip.resize(height=720)
+            clip = normalize_audio(clip)
             clips.append(clip)
     print('Combining clips:\n', clips)
     concat_videos(clips)
@@ -65,9 +66,17 @@ def process_playlist(playlist_filename):
     # Todo: cleanup clips when done
 
 
+def normalize_audio(clip):
+    if clip.audio.max_volume() > 0:
+        audio = clip.audio.audio_normalize()
+        clip = clip.set_audio(audio)
+    return clip
+
+
 def download_video(url, destination=None, filename=None):
     try:
-        video = YouTube(url).streams.filter(progressive=True).order_by('resolution').desc().first()
+        # video = YouTube(url).streams.filter(progressive=True).order_by('resolution').desc().first()
+        video = YouTube(url).streams.first()
         video.download(output_path=destination, filename=filename)
         return video.default_filename
     except Exception:
